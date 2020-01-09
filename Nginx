@@ -1,0 +1,4 @@
+Commandes:
+
+Reload de service nginx:
+/etc/init.d/nginx reload
