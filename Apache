@@ -1,4 +1,8 @@
 Commandes:
+
+Cluster-apache-actifpassif:
+https://blog.alphorm.com/creer-cluster-apache-actifpassif/
+
 Vhost:
 #apachectl -S
 
