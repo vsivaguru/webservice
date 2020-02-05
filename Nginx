@@ -117,6 +117,8 @@ $ sudo systemctl status nginx.service
 $ sudo journalctl -xe
 
 Erreur rancontrer:
+
+#Service nginx ne demarre plus:
 https://openclassrooms.com/forum/sujet/impossible-de-demarrer-nginx
 I just noticed that there was an old conf file in /etc/nginx/sites-available and 
 I think it was something to do with that - I've deleted it and it works. 
