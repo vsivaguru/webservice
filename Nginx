@@ -1,4 +1,126 @@
 Commandes:
 
-Reload de service nginx:
-/etc/init.d/nginx reload
+1: Install Nginx HTTP server
+  https://www.cyberciti.biz/faq/howto-install-setup-nginx-on-debian-linux-9/
+
+  $ sudo apt-get update
+  $ sudo apt-get install nginx
+
+  $ ps aux | grep nginx
+  $ pgrep nginx
+
+  $ netstat -tulpn | grep :80
+
+2: Start/stop/restart nginx command
+  $ sudo systemctl enable nginx
+  $ sudo systemctl restart nginx
+  $ sudo systemctl stop nginx
+  $ sudo systemctl start nginx
+  $ sudo systemctl status nginx
+
+3: Test it
+
+  $ ip a
+  $ ifconfig eth0
+
+  Fire a web browser and type url:
+  http://45.33.115.105/
+  curl http://10.129.150.105
+
+4: Configure Nginx web server
+  By default all HTML/css/images files are stored in /var/www/html/ directory.
+  This is known as the root of your web server.It is defined in /etc/nginx/sites-enabled/default config file.
+  You can edit it with either vim command/nano command
+  $ sudo vi /etc/nginx/sites-enabled/default
+  $ sudo nano /etc/nginx/sites-enabled/default
+
+  The /etc/nginx/nginx.conf is your main nginx config file and /etc/nginx/sites-enabled/default is default config file.
+  $ sudo nano /etc/nginx/nginx.conf
+
+5. Creating your own config file:
+  First create a user named siva for www.cyberciti.biz domain using the useradd command:
+    $ sudo useradd -c "cyberciti.biz user" -d /home/nginx-www.cyberciti.biz -s /usr/sbin/nologin -m siva
+
+  To lock the password for the siva account, enter:
+    $ sudo passwd -l siva
+    passwd: password expiry information changed.
+
+  Verify it:
+    $ ls -l /home/
+
+  Sample outputs:
+      total 4
+      drwxr-xr-x 2 siva siva 4096 Aug  3 10:37 nginx-www.cyberciti.biz
+  
+  To create a Virtual Hosts named www.cyberciti.biz, enter;
+    $ sudo nano /etc/nginx/sites-available/www.cyberciti.biz.conf
+
+Append the basic config:
+
+    server {
+      listen 80;
+      listen [::]:80;
+
+      server_name www.cyberciti.biz;
+
+      root /home/nginx-www.cyberciti.biz;
+      index index.html;
+
+      location / {
+        try_files $uri $uri/ =404;
+      }
+    }
+    
+Save and close the file. You must create a soft link as follows:
+  $ sudo ln -s /etc/nginx/sites-available/www.cyberciti.biz.conf /etc/nginx/sites-enabled/www.cyberciti.biz.conf
+
+Finally test and reload server:
+  $ sudo nginx -t
+  $ sudo systemctl reload nginx
+
+Now create a test file at:
+  $ sudo nano /home/nginx-www.cyberciti.biz/index.html
+
+Append the following:
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>Welcome to nixCraft!</title>
+    <style>
+        body {
+            width: 35em;
+            margin: 0 auto;
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+        }
+    </style>
+    </head>
+    <body>
+    <h1>Welcome to www.cyberciti.biz!</h1>
+    <p>This is a test for Nginx virtual host.</p>
+
+    <p><em>Thank you for using nixCraft tutorials.</em></p>
+    </body>
+    </html>
+    
+Save and close the file. Set correct permissions using chmod command and chown command:
+  $ sudo chown siva:siva /home/nginx-www.cyberciti.biz/index.html
+  $ sudo chmod 0444 /home/nginx-www.cyberciti.biz/index.html
+
+  $ ls -l /home/nginx-www.cyberciti.biz/index.html
+  -r--r--r-- 1 siva siva 374 Aug 3 10:52 /home/nginx-www.cyberciti.biz/index.html
+
+Test it by typing url:
+http://www.cyberciti.biz/
+
+journalctl:
+$ sudo systemctl status nginx.service
+$ sudo journalctl -xe
+
+Erreur rancontrer:
+https://openclassrooms.com/forum/sujet/impossible-de-demarrer-nginx
+I just noticed that there was an old conf file in /etc/nginx/sites-available and 
+I think it was something to do with that - I've deleted it and it works. 
+It would be nice to know how to have figured this out from logs though!
+
+
